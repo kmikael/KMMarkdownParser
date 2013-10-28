@@ -90,6 +90,16 @@
     };
     [self commitAttributesBlock:block pattern:headerPattern];
     
+    // Apply link styling with title text
+    NSString *linkPattern = @"(\\[)(.+?)(])(\\()(.+?)(\\))";
+    block = ^ NSDictionary * (NSArray *results) {
+        NSString *URLString = [results objectAtIndex:5];
+        NSDictionary *attributes = @{NSLinkAttributeName: URLString, NSFontAttributeName: font};
+        NSString *replacement = [results objectAtIndex:2];
+        return @{@"attributes": attributes, @"replacement": replacement};
+    };
+    [self commitAttributesBlock:block pattern:linkPattern];
+    
     return _attributedString;
 }
 
