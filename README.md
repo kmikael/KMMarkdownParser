@@ -1,7 +1,9 @@
 # KMMarkdownParser
 
 `KMMarkdownParser` is a really simple mini-markdown to `NSAttributedString` converter.
-The span elements bold (**), italic (*), underline (_) and monospace (`) are supported at the moment.
+The span elements bold (`**`), italic (`*`), underline (`_`), monospace
+and links (both the `<url>` and `[title](url)` variants), as well as headers (`#`, `##`, etc.)
+are supported at the moment.
 
 ## Usage
 
