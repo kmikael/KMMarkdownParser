@@ -73,7 +73,7 @@
     };
     [self commitAttributesBlock:block pattern:URLPattern];
     
-    // Apply big, bold styling to lines starting with `#`, `#`, etc.
+    // Apply big, bold styling to lines starting with `#`, `##`, etc.
     NSString *headerPattern = @"(#+)( ?)(.+?)(\n)";
     block = ^ NSDictionary * (NSArray *results) {
         NSString *hashes = [results objectAtIndex:1];
