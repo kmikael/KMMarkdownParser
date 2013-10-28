@@ -129,20 +129,21 @@
         [replacements addObject:replacement];
     }];
     
-    NSUInteger nudge = 0;
+    NSUInteger locationOffset = 0;
     
     // Iterate over the range values and replace those characters with the replacement string
-    for (NSUInteger index = 0u; index < [values count]; ++index) {
-        // Update the range to accommodate for shifting
-        // (because characters were deleted/added in previous loops iterations)
+    for (NSUInteger index = 0; index < [values count]; ++index) {
+        // Unbox the range
         NSRange range = [[values objectAtIndex:index] rangeValue];
-        NSAttributedString *replacement = [replacements objectAtIndex:index];
         
-        range.location += nudge;
+        // Update the range to accommodate for shifting, because characters were deleted/added in previous loops iterations
+        range.location += locationOffset;
         
-        [_attributedString replaceCharactersInRange:range withAttributedString:replacement];
+        NSAttributedString *replacementString = [replacements objectAtIndex:index];
+        
+        [_attributedString replaceCharactersInRange:range withAttributedString:replacementString];
 
-        nudge = nudge - range.length + [replacement length];
+        locationOffset = locationOffset - range.length + [replacementString length];
     }
 }
 
