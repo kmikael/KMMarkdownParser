@@ -53,7 +53,7 @@
     [self commitAttributes:italicAttributes delimiter:@"*"];
     
     // Underline words wraped with `_`
-    NSDictionary *underlineAttributes = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle)};
+    NSDictionary *underlineAttributes = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle), NSFontAttributeName: font};
     [self commitAttributes:underlineAttributes delimiter:@"_"];
     
     // Apply monospace styling to words wraped with `\``
@@ -62,22 +62,93 @@
     NSDictionary *monospaceAttributes = @{NSFontAttributeName: monospaceFont};
     [self commitAttributes:monospaceAttributes delimiter:@"`"];
     
-    NSDictionary *attributes = @{NSLinkAttributeName: @""};
-    [self commitAttributes:attributes openingDelimiter:@"<" closingDelimiter:@">"];
+    // Apply link styling to URLs wrapped in `<` and `>`
+    NSString *escapedOpeningDelimiter = [NSRegularExpression escapedPatternForString:@"<"];
+    NSString *escapedClosingDelimiter = [NSRegularExpression escapedPatternForString:@">"];
+    NSString *URLPattern = [NSString stringWithFormat:@"(%@)(.+?)(%@)", escapedOpeningDelimiter, escapedClosingDelimiter];
+    NSDictionary * (^block)(NSArray *) = ^ NSDictionary * (NSArray *results) {
+        NSString *URLString = [results objectAtIndex:2];
+        NSDictionary *attributes = @{NSLinkAttributeName: URLString, NSFontAttributeName: font};
+        return @{@"attributes": attributes, @"replacement": URLString};
+    };
+    [self commitAttributesBlock:block pattern:URLPattern];
+    
+    // Apply big, bold styling to lines starting with `#`, `#`, etc.
+    NSString *headerPattern = @"(#+)( ?)(.+?)(\n)";
+    block = ^ NSDictionary * (NSArray *results) {
+        NSString *hashes = [results objectAtIndex:1];
+        NSUInteger hashCount = [hashes length];
+        NSString *headerString = [results objectAtIndex:3];
+        
+        CGFloat size = boldFontDescriptor.pointSize + 24 - 6 * MIN(hashCount, 4);
+        UIFont *headerFont = [UIFont fontWithDescriptor:boldFontDescriptor size:size];
+        
+        CGFloat baselineOffset = 10.0 - MAX(hashCount, 4);
+        
+        NSDictionary *attributes = @{NSFontAttributeName: headerFont, NSBaselineOffsetAttributeName: @(baselineOffset)};
+        return @{@"attributes": attributes, @"replacement": headerString};
+    };
+    [self commitAttributesBlock:block pattern:headerPattern];
     
     return _attributedString;
 }
 
-/** Applies the `attributes` to words delimited by `openingDelimiter` and `closingDelimiter` */
-- (void)commitAttributes:(NSDictionary *)attributes openingDelimiter:(NSString *)openingDelimiter closingDelimiter:(NSString *)closingDelimiter
+/** Apply the attributes returned by attributesBlock to the search pattern */
+- (void)commitAttributesBlock:(NSDictionary * (^)(NSArray *results))attributesBlock pattern:(NSString *)pattern
 {
     // The full range of the string
     NSUInteger length = [_attributedString length];
     NSRange range = NSMakeRange(0u, length);
     
-    // The ranges (wraped as NSValue objects) of the delimiter characters that will be deleted
+    // The ranges (wraped as NSValue objects) of the matches
     NSMutableArray *values = [NSMutableArray array];
     
+    // The replacement strings, each match's full text is replaced with this string
+    NSMutableArray *replacements = [NSMutableArray array];
+    
+    NSRegularExpression *regularExpression = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:NULL];
+    
+    // Enumerate the matches,
+    NSString *string = [_attributedString string];
+    [regularExpression enumerateMatchesInString:string options:0 range:range usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+        
+        NSMutableArray *results = [NSMutableArray array];
+        for (NSUInteger index = 0; index < result.numberOfRanges; ++index) {
+            NSRange range = [result rangeAtIndex:index];
+            NSString *substring = [string substringWithRange:range];
+            [results addObject:substring];
+        }
+        
+        NSDictionary *parser = attributesBlock(results);
+        NSDictionary *attributes = [parser objectForKey:@"attributes"];
+        NSString *replacementString = [parser objectForKey:@"replacement"];
+        NSAttributedString *replacement = [[NSAttributedString alloc] initWithString:replacementString attributes:attributes];
+        
+        // and save the rages of the full matches and the replacements
+        [values addObject:[NSValue valueWithRange:result.range]];
+        [replacements addObject:replacement];
+    }];
+    
+    NSUInteger nudge = 0;
+    
+    // Iterate over the range values and replace those characters with the replacement string
+    for (NSUInteger index = 0u; index < [values count]; ++index) {
+        // Update the range to accommodate for shifting
+        // (because characters were deleted/added in previous loops iterations)
+        NSRange range = [[values objectAtIndex:index] rangeValue];
+        NSAttributedString *replacement = [replacements objectAtIndex:index];
+        
+        range.location += nudge;
+        
+        [_attributedString replaceCharactersInRange:range withAttributedString:replacement];
+
+        nudge = nudge - range.length + [replacement length];
+    }
+}
+
+/** Applies the `attributes` to words delimited by `openingDelimiter` and `closingDelimiter` */
+- (void)commitAttributes:(NSDictionary *)attributes openingDelimiter:(NSString *)openingDelimiter closingDelimiter:(NSString *)closingDelimiter
+{
     // Escape the delimiter and create the regular expression, with 3 capture groups
     // 1. The opening delimiter
     // 2. The wrapped words
@@ -85,37 +156,13 @@
     NSString *escapedOpeningDelimiter = [NSRegularExpression escapedPatternForString:openingDelimiter];
     NSString *escapedClosingDelimiter = [NSRegularExpression escapedPatternForString:closingDelimiter];
     NSString *pattern = [NSString stringWithFormat:@"(%@)(.+?)(%@)", escapedOpeningDelimiter, escapedClosingDelimiter];
-    NSRegularExpression *regularExpression = [NSRegularExpression regularExpressionWithPattern:pattern options:0 error:NULL];
     
-    // Enumerate the matches,
-    NSString *string = [_attributedString string];
-    [regularExpression enumerateMatchesInString:string options:0 range:range usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
-        if (attributes[NSLinkAttributeName]) {
-            // `NSLinkAttributeName` is a special case because the attributes depend on the matched string
-            NSRange URLRange = [result rangeAtIndex:2];
-            NSString *URLString = [[_attributedString string] substringWithRange:URLRange];
-            [_attributedString addAttribute:NSLinkAttributeName value:URLString range:result.range];
-        } else {
-            [_attributedString addAttributes:attributes range:result.range];
-        }
-        
-        // and save the rages of the opening and closing delimiters
-        [values addObject:[NSValue valueWithRange:[result rangeAtIndex:1]]];
-        [values addObject:[NSValue valueWithRange:[result rangeAtIndex:3]]];
-    }];
+    NSDictionary * (^block)(NSArray *) = ^ NSDictionary * (NSArray *results) {
+        NSString *replacement = [results objectAtIndex:2];
+        return @{@"attributes": attributes, @"replacement": replacement};
+    };
     
-    // Iterate over the range values and delete those characters
-    for (NSUInteger index = 0u; index < [values count]; index += 1) {
-        // Update the range to accommodate for the shifting ranges
-        // (because characters were deleted in previous loops iterations)
-        NSRange range = [[values objectAtIndex:index] rangeValue];
-        range.location -= index * [openingDelimiter length];
-        [_attributedString deleteCharactersInRange:range];
-        index++;
-        range = [[values objectAtIndex:index] rangeValue];
-        range.location -= index * [closingDelimiter length];
-        [_attributedString deleteCharactersInRange:range];
-    }
+    [self commitAttributesBlock:block pattern:pattern];
 }
 
 /** Applies the `attributes` to words delimited by `delimiter` */
