@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		644DE17F182D2BE70092DDBD /* KMTextParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 644DE17E182D2BE70092DDBD /* KMTextParser.m */; };
+		644DE182182D39AC0092DDBD /* KMMarkdownParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 644DE181182D39AC0092DDBD /* KMMarkdownParser.m */; };
 		645E4A6C1810350700B97080 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 645E4A6B1810350700B97080 /* Foundation.framework */; };
 		645E4A6E1810350700B97080 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 645E4A6D1810350700B97080 /* CoreGraphics.framework */; };
 		645E4A701810350800B97080 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 645E4A6F1810350800B97080 /* UIKit.framework */; };
@@ -22,7 +24,7 @@
 		645E4A951810350800B97080 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 645E4A931810350800B97080 /* InfoPlist.strings */; };
 		645E4A971810350800B97080 /* MarkdownViewerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 645E4A961810350800B97080 /* MarkdownViewerTests.m */; };
 		645E4AA1181035DD00B97080 /* Metamorphosis.txt in Resources */ = {isa = PBXBuildFile; fileRef = 645E4AA0181035DD00B97080 /* Metamorphosis.txt */; };
-		6465F9411811BFAC00481138 /* KMMarkdownParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 6465F9401811BFAC00481138 /* KMMarkdownParser.m */; };
+		6465F9411811BFAC00481138 /* KMTextProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 6465F9401811BFAC00481138 /* KMTextProcessor.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +38,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		644DE17D182D2BE70092DDBD /* KMTextParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KMTextParser.h; sourceTree = "<group>"; };
+		644DE17E182D2BE70092DDBD /* KMTextParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KMTextParser.m; sourceTree = "<group>"; };
+		644DE180182D39AC0092DDBD /* KMMarkdownParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KMMarkdownParser.h; sourceTree = "<group>"; };
+		644DE181182D39AC0092DDBD /* KMMarkdownParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KMMarkdownParser.m; sourceTree = "<group>"; };
 		645E4A681810350700B97080 /* MarkdownViewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MarkdownViewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		645E4A6B1810350700B97080 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		645E4A6D1810350700B97080 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -56,8 +62,8 @@
 		645E4A941810350800B97080 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		645E4A961810350800B97080 /* MarkdownViewerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MarkdownViewerTests.m; sourceTree = "<group>"; };
 		645E4AA0181035DD00B97080 /* Metamorphosis.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Metamorphosis.txt; sourceTree = "<group>"; };
-		6465F93F1811BFAC00481138 /* KMMarkdownParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KMMarkdownParser.h; sourceTree = "<group>"; };
-		6465F9401811BFAC00481138 /* KMMarkdownParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KMMarkdownParser.m; sourceTree = "<group>"; };
+		6465F93F1811BFAC00481138 /* KMTextProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KMTextProcessor.h; sourceTree = "<group>"; };
+		6465F9401811BFAC00481138 /* KMTextProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KMTextProcessor.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,8 +168,12 @@
 		6465F93E1811BFAC00481138 /* KMMarkdownParser */ = {
 			isa = PBXGroup;
 			children = (
-				6465F93F1811BFAC00481138 /* KMMarkdownParser.h */,
-				6465F9401811BFAC00481138 /* KMMarkdownParser.m */,
+				6465F93F1811BFAC00481138 /* KMTextProcessor.h */,
+				6465F9401811BFAC00481138 /* KMTextProcessor.m */,
+				644DE17D182D2BE70092DDBD /* KMTextParser.h */,
+				644DE17E182D2BE70092DDBD /* KMTextParser.m */,
+				644DE180182D39AC0092DDBD /* KMMarkdownParser.h */,
+				644DE181182D39AC0092DDBD /* KMMarkdownParser.m */,
 			);
 			path = KMMarkdownParser;
 			sourceTree = SOURCE_ROOT;
@@ -267,8 +277,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				644DE17F182D2BE70092DDBD /* KMTextParser.m in Sources */,
 				645E4A781810350800B97080 /* main.m in Sources */,
-				6465F9411811BFAC00481138 /* KMMarkdownParser.m in Sources */,
+				6465F9411811BFAC00481138 /* KMTextProcessor.m in Sources */,
+				644DE182182D39AC0092DDBD /* KMMarkdownParser.m in Sources */,
 				645E4A821810350800B97080 /* MVViewController.m in Sources */,
 				645E4A7C1810350800B97080 /* MVAppDelegate.m in Sources */,
 			);
