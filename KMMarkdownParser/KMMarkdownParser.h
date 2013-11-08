@@ -8,12 +8,12 @@
 
 #import "KMTextParser.h"
 
+/**
+ * KMMarkdownParser will take a plain text markdown string and produce an NSAttributedString.
+ * The span elements bold (**), italic (*), underline (_), monospace (`) and link (<, >) are supported.
+ * If given, the produced attributed string will use `self.fontName` and `self.fontSize`,
+ * otherwise the system default font and body text size will be used.
+ */
 @interface KMMarkdownParser : KMTextParser
-
-/** The font name for the attributed string to be produced. */
-@property (strong, nonatomic) NSString *fontName;
-
-/** The point size for the attributed string to be produced. */
-@property (assign, nonatomic) CGFloat fontSize;
 
 @end
