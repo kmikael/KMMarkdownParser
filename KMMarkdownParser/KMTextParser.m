@@ -81,8 +81,10 @@
     // Apply the font to the whole string
     [_attributedString addAttribute:NSFontAttributeName value:font range:range];
     
-    if ([self.textParsers count] > 0) {
-        for (KMTextParser *textParser in self.textParsers) {
+    NSArray *textParsers = [self flattenedTextParsers];
+    
+    if ([textParsers count] > 0) {
+        for (KMTextParser *textParser in textParsers) {
             [self commitParser:textParser];
         }
     } else {
@@ -93,6 +95,24 @@
 }
 
 #pragma mark -
+
+/** Recursively flattens the `textParsers` array. */
+- (NSArray *)flattenedTextParsers
+{
+    NSArray *textParsers = self.textParsers;
+    NSUInteger capacity = [textParsers count];
+    NSMutableArray *flattenedTextParsers = [NSMutableArray arrayWithCapacity:capacity];
+    
+    for (KMTextParser *textParser in textParsers) {
+        if (textParser.textParsers) {
+            [flattenedTextParsers addObjectsFromArray:[textParser flattenedTextParsers]];
+        } else {
+            [flattenedTextParsers addObject:textParser];
+        }
+    }
+    
+    return flattenedTextParsers;
+}
 
 /** Apply the attributes returned by attributesBlock to the search pattern */
 - (void)commitParser:(KMTextParser *)textParser
