@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-typedef NSAttributedString * (^KMTextParserProcessingBlock)(NSArray *results);
+typedef NSArray * (^KMTextParserProcessingBlock)(NSArray *results);
 
 /**
  * 

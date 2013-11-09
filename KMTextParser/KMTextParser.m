@@ -11,6 +11,7 @@
 @interface KMTextParser ()
 
 @property (strong, nonatomic) NSMutableAttributedString *attributedString;
+@property (strong, nonatomic) UIFont *font;
 
 @end
 
@@ -51,9 +52,9 @@
     NSString *escapedClosingDelimiter = [NSRegularExpression escapedPatternForString:closingDelimiter];
     NSString *pattern = [NSString stringWithFormat:@"(%@)(.+?)(%@)", escapedOpeningDelimiter, escapedClosingDelimiter];
     
-    KMTextParserProcessingBlock processingBlock = ^ NSAttributedString * (NSArray *results) {
+    KMTextParserProcessingBlock processingBlock = ^ NSArray * (NSArray *results) {
         NSString *replacementString = [results objectAtIndex:2];
-        return [[NSAttributedString alloc] initWithString:replacementString attributes:attributes];
+        return @[replacementString, attributes];
     };
     
     return [KMTextParser textParserWithPattern:pattern processingBlock:processingBlock];
@@ -66,20 +67,29 @@
 
 #pragma mark -
 
+- (UIFont *)font
+{
+    if (!_font) {
+        // Merge the client properties into the default ones
+        UIFontDescriptor *fontDescriptor = [UIFontDescriptor fontDescriptorWithName:self.fontName size:self.fontSize];
+        _font = [UIFont fontWithDescriptor:fontDescriptor size:fontDescriptor.pointSize];
+    }
+    
+    return _font;
+}
+
+#pragma mark -
+
 - (NSAttributedString *)attributedStringFromString:(NSString *)string
 {
     _attributedString = [[NSMutableAttributedString alloc] initWithString:string];
-    
-    // Merge the client properties into the default ones and create the normal font
-    UIFontDescriptor *fontDescriptor = [UIFontDescriptor fontDescriptorWithName:self.fontName size:self.fontSize];
-    UIFont *font = [UIFont fontWithDescriptor:fontDescriptor size:fontDescriptor.pointSize];
     
     // The full range of the string
     NSUInteger length = [_attributedString length];
     NSRange range = NSMakeRange(0u, length);
     
     // Apply the font to the whole string
-    [_attributedString addAttribute:NSFontAttributeName value:font range:range];
+    [_attributedString addAttribute:NSFontAttributeName value:self.font range:range];
     
     NSArray *textParsers = [self flattenedTextParsers];
     
@@ -140,11 +150,22 @@
             [results addObject:substring];
         }
         
-        NSAttributedString *replacementString = textParser.processingBlock(results);
+        NSArray *components = textParser.processingBlock(results);
+        NSString *replacementString = [components firstObject];
+        NSDictionary *attributes = [components lastObject];
+        
+        NSMutableAttributedString *attributedString = [[NSMutableAttributedString alloc] initWithString:replacementString attributes:attributes];
+        
+        // Use the default font if one hasn't been specified
+        if (![attributes objectForKey:NSFontAttributeName]) {
+            NSUInteger length = [attributedString length];
+            NSRange range = NSMakeRange(0u, length);
+            [attributedString addAttribute:NSFontAttributeName value:self.font range:range];
+        }
         
         // and save the rages of the full matches and the replacements
         [values addObject:[NSValue valueWithRange:result.range]];
-        [replacementStrings addObject:replacementString];
+        [replacementStrings addObject:attributedString];
     }];
     
     NSUInteger locationOffset = 0;

@@ -49,10 +49,10 @@
     [textParsers addObject:monospaceMarkdownParser];
     
     // URLs: `<...>`
-    KMTextParserProcessingBlock URLProcessingBlock = ^ NSAttributedString * (NSArray *results) {
+    KMTextParserProcessingBlock URLProcessingBlock = ^ NSArray * (NSArray *results) {
         NSString *URLString = [results objectAtIndex:2];
-        NSDictionary *attributes = @{NSLinkAttributeName: URLString, NSFontAttributeName: font};
-        return [[NSAttributedString alloc] initWithString:URLString attributes:attributes];
+        NSDictionary *attributes = @{NSLinkAttributeName: URLString};
+        return @[URLString, attributes];
     };
     NSString *URLPattern = @"(<)(.+?)(>)";
     
@@ -61,7 +61,7 @@
     
     // Headers: `#`, `##`, etc.
     NSString *headerPattern = @"(#+)( ?)(.+?)(\n)";
-    KMTextParserProcessingBlock headerProcessingBlock = ^ NSAttributedString * (NSArray *results) {
+    KMTextParserProcessingBlock headerProcessingBlock = ^ NSArray * (NSArray *results) {
         NSString *hashes = [results objectAtIndex:1];
         NSUInteger hashCount = [hashes length];
         NSString *headerString = [results objectAtIndex:3];
@@ -72,7 +72,7 @@
         CGFloat baselineOffset = 10.0 - MAX(hashCount, 4);
         
         NSDictionary *attributes = @{NSFontAttributeName: headerFont, NSBaselineOffsetAttributeName: @(baselineOffset)};
-        return [[NSAttributedString alloc] initWithString:headerString attributes:attributes];
+        return @[headerString, attributes];
     };
     
     KMTextParser *headerMarkdownParser = [KMTextParser textParserWithPattern:headerPattern processingBlock:headerProcessingBlock];
@@ -80,11 +80,11 @@
     
     // URLs: `[...](...)`
     NSString *URLPattern_ = @"(\\[)(.+?)(])(\\()(.+?)(\\))";
-    KMTextParserProcessingBlock URLProcessingBlock_ = ^ NSAttributedString * (NSArray *results) {
+    KMTextParserProcessingBlock URLProcessingBlock_ = ^ NSArray * (NSArray *results) {
         NSString *URLString = [results objectAtIndex:5];
-        NSDictionary *attributes = @{NSLinkAttributeName: URLString, NSFontAttributeName: font};
+        NSDictionary *attributes = @{NSLinkAttributeName: URLString};
         NSString *replacementString = [results objectAtIndex:2];
-        return [[NSAttributedString alloc] initWithString:replacementString attributes:attributes];
+        return @[replacementString, attributes];
     };
     
     KMTextParser *URLMarkdownParser_ = [KMTextParser textParserWithPattern:URLPattern_ processingBlock:URLProcessingBlock_];
