@@ -8,7 +8,7 @@ are supported at the moment.
 ## Usage
 
 Create an instance of `KMMarkdownParser`, optionally set a font name and size,
-then call `attributedStringFromMarkdownString:`.
+then call `attributedStringFromString:`.
 Your `NSAttributedString` is ready for use in a `UILabel`, `UITextView` etc.
 
 ```objective-c
@@ -17,7 +17,7 @@ markdownParser.fontName = @"AvenirNext-Regular";
 markdownParser.fontSize = 20.0;
 
 NSString *markdownString = @"A `markdown` string with **bold** and *italic* text.";
-self.textView.attributedText = [markdownParser attributedStringFromMarkdownString:markdownString];
+self.textView.attributedText = [markdownParser attributedStringFromString:markdownString];
 ```
 
 See the example project for more information, the code is extremely well-documented.
