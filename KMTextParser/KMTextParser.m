@@ -17,9 +17,21 @@
 
 @implementation KMTextParser
 
-- (instancetype)initWithTextParsers:(NSArray *)textParsers
+- (id)init
 {
     self = [super init];
+    if (self) {
+        // Default to the system body text style
+        UIFont *font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+        _fontName = font.fontName;
+        _fontSize = font.pointSize;
+    }
+    return self;
+}
+
+- (instancetype)initWithTextParsers:(NSArray *)textParsers
+{
+    self = [self init];
     if (self) {
         _textParsers = textParsers;
     }
@@ -28,7 +40,7 @@
 
 - (instancetype)initWithPattern:(NSString *)pattern processingBlock:(KMTextParserProcessingBlock)processingBlock;
 {
-    self = [super init];
+    self = [self init];
     if (self) {
         _processingBlock = processingBlock;
         _pattern = pattern;
