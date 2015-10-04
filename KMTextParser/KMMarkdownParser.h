@@ -8,6 +8,8 @@
 
 #import "KMTextParser.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 /**
  * KMMarkdownParser will take a plain text markdown string and produce an NSAttributedString.
  * The span elements bold (**), italic (*), underline (_), monospace (`) and link (<, >) are supported.
@@ -17,3 +19,5 @@
 @interface KMMarkdownParser : KMTextParser
 
 @end
+
+NS_ASSUME_NONNULL_END

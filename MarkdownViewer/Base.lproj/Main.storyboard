@@ -1,48 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4510" systemVersion="13A598" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="4vc-ve-zPj">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="15A284" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="4vc-ve-zPj">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
     </dependencies>
     <scenes>
-        <!--View Controller - Metamorphosis-->
+        <!--Metamorphosis-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
                 <viewController id="vXZ-lx-hvc" customClass="MVViewController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="pRd-aG-bp6"/>
-                        <viewControllerLayoutGuide type="bottom" id="t0p-lC-xt5"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                    <textView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" usesAttributedText="YES" id="Gz2-ip-ZAq">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TWZ-07-L9s">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                <connections>
-                                    <outlet property="delegate" destination="vXZ-lx-hvc" id="daR-0g-jLk"/>
-                                </connections>
-                            </textView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="TWZ-07-L9s" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="1vg-H0-1Nh"/>
-                            <constraint firstItem="TWZ-07-L9s" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="2XE-bH-7uq"/>
-                            <constraint firstItem="t0p-lC-xt5" firstAttribute="top" secondItem="TWZ-07-L9s" secondAttribute="bottom" id="Jtj-Wi-AdZ"/>
-                            <constraint firstAttribute="trailing" secondItem="TWZ-07-L9s" secondAttribute="trailing" id="xGk-BJ-WEf"/>
-                        </constraints>
-                    </view>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <attributedString key="attributedText"/>
+                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                        <dataDetectorType key="dataDetectorTypes" link="YES"/>
+                        <connections>
+                            <outlet property="delegate" destination="vXZ-lx-hvc" id="hbF-C5-dBA"/>
+                        </connections>
+                    </textView>
                     <navigationItem key="navigationItem" title="Metamorphosis" id="dx5-ox-1MG"/>
                     <connections>
-                        <outlet property="textView" destination="TWZ-07-L9s" id="TKv-4w-2Ad"/>
+                        <outlet property="textView" destination="Gz2-ip-ZAq" id="CSh-dV-OY6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="783" y="717"/>
+            <point key="canvasLocation" x="1468.125" y="757.39436619718299"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="MdW-Rl-cyt">
@@ -52,6 +38,7 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="BPF-21-cTJ">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <animations/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -60,12 +47,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="866-az-Md9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="296" y="717"/>
+            <point key="canvasLocation" x="555" y="757.39436619718299"/>
         </scene>
     </scenes>
-    <simulatedMetricsContainer key="defaultSimulatedMetrics">
-        <simulatedStatusBarMetrics key="statusBar"/>
-        <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination" type="retina4"/>
-    </simulatedMetricsContainer>
 </document>

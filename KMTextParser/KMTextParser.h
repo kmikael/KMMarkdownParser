@@ -6,13 +6,12 @@
 //  Copyright (c) 2013 Mikael Konutgan. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+@import UIKit;
 
-typedef NSArray * (^KMTextParserProcessingBlock)(NSArray *results);
+NS_ASSUME_NONNULL_BEGIN
 
-/**
- * 
- */
+typedef NSArray * _Nonnull (^KMTextParserProcessingBlock)(NSArray *results);
+
 @interface KMTextParser : NSObject
 
 /** Creates a text parser that chains a collection of parser sequentially. */
@@ -31,13 +30,13 @@ typedef NSArray * (^KMTextParserProcessingBlock)(NSArray *results);
 - (NSAttributedString *)attributedStringFromString:(NSString *)string;
 
 /** The text parsers that the text parser was created with by calling `sequence`. */
-@property (copy, nonatomic, readonly) NSArray *textParsers;
+@property (copy, nonatomic, readonly, nullable) NSArray *textParsers;
 
 /** The text parser's pattern. */
-@property (copy, nonatomic, readonly) NSString *pattern;
+@property (copy, nonatomic, readonly, nullable) NSString *pattern;
 
 /** The text parser's processing block. */
-@property (copy, nonatomic, readonly) KMTextParserProcessingBlock processingBlock;
+@property (copy, nonatomic, readonly, nullable) KMTextParserProcessingBlock processingBlock;
 
 /** The font name for the attributed string to be produced. */
 @property (strong, nonatomic) NSString *fontName;
@@ -46,3 +45,5 @@ typedef NSArray * (^KMTextParserProcessingBlock)(NSArray *results);
 @property (assign, nonatomic) CGFloat fontSize;
 
 @end
+
+NS_ASSUME_NONNULL_END

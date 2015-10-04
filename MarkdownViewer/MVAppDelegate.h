@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Mikael Konutgan. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+@import UIKit;
 
 @interface MVAppDelegate : UIResponder <UIApplicationDelegate>
 

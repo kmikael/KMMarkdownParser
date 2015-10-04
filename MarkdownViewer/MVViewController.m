@@ -9,11 +9,9 @@
 #import "MVViewController.h"
 #import "KMMarkdownParser.h"
 
-@interface MVViewController ()
+@interface MVViewController () <UITextViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextView *textView;
-
-@property (strong, nonatomic) KMMarkdownParser *markdownParser;
 
 @end
 
@@ -23,24 +21,19 @@
 {
     [super viewDidLoad];
     
+    KMMarkdownParser *markdownParser = [[KMMarkdownParser alloc] init];
+    
     NSURL *URL = [[NSBundle mainBundle] URLForResource:@"Metamorphosis" withExtension:@"txt"];
-    NSString *markdownString = [[NSString alloc] initWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:NULL];
-    self.textView.attributedText = [self.markdownParser attributedStringFromString:markdownString];
+    NSString *string = [[NSString alloc] initWithContentsOfURL:URL encoding:NSUTF8StringEncoding error:NULL];
+    
+    self.textView.attributedText = [markdownParser attributedStringFromString:string];
 }
 
-#pragma mark -
+#pragma mark - UITextViewDelegate
 
-- (KMMarkdownParser *)markdownParser
+- (BOOL)textView:(UITextView *)textView shouldInteractWithURL:(NSURL *)URL inRange:(NSRange)characterRange
 {
-    if (!_markdownParser) {
-        // Lazily instantiate the markdown parser
-        _markdownParser = [[KMMarkdownParser alloc] init];
-        // and set a font and size to be used
-        _markdownParser.fontName = @"AvenirNext-Regular";
-        _markdownParser.fontSize = 20.0;
-    }
-    
-    return _markdownParser;
+    return YES;
 }
 
 @end

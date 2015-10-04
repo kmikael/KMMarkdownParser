@@ -8,10 +8,20 @@
 
 #import "KMMarkdownParser.h"
 
+@interface KMMarkdownParser ()
+
+@property (nonatomic, strong) NSArray *markdownTextParsers;
+
+@end
+
 @implementation KMMarkdownParser
 
 - (NSArray *)textParsers
 {
+    if (self.markdownTextParsers) {
+        return self.markdownTextParsers;
+    }
+    
     NSMutableArray *textParsers = [NSMutableArray array];
     
     // Merge the client properties into the default ones and create the normal font
@@ -49,18 +59,20 @@
     [textParsers addObject:monospaceMarkdownParser];
     
     // URLs: `<...>`
+    NSString *URLPattern = @"(<)(.+?)(>)";
+    
     KMTextParserProcessingBlock URLProcessingBlock = ^ NSArray * (NSArray *results) {
         NSString *URLString = [results objectAtIndex:2];
         NSDictionary *attributes = @{NSLinkAttributeName: URLString};
         return @[URLString, attributes];
     };
-    NSString *URLPattern = @"(<)(.+?)(>)";
     
     KMTextParser *URLMarkdownParser = [KMTextParser textParserWithPattern:URLPattern processingBlock:URLProcessingBlock];
     [textParsers addObject:URLMarkdownParser];
     
     // Headers: `#`, `##`, etc.
     NSString *headerPattern = @"(#+)( ?)(.+?)(\n)";
+    
     KMTextParserProcessingBlock headerProcessingBlock = ^ NSArray * (NSArray *results) {
         NSString *hashes = [results objectAtIndex:1];
         NSUInteger hashCount = [hashes length];
@@ -80,6 +92,7 @@
     
     // URLs: `[...](...)`
     NSString *URLPattern_ = @"(\\[)(.+?)(])(\\()(.+?)(\\))";
+    
     KMTextParserProcessingBlock URLProcessingBlock_ = ^ NSArray * (NSArray *results) {
         NSString *URLString = [results objectAtIndex:5];
         NSDictionary *attributes = @{NSLinkAttributeName: URLString};
@@ -90,7 +103,9 @@
     KMTextParser *URLMarkdownParser_ = [KMTextParser textParserWithPattern:URLPattern_ processingBlock:URLProcessingBlock_];
     [textParsers addObject:URLMarkdownParser_];
     
-    return [NSArray arrayWithArray:textParsers];
+    self.markdownTextParsers = [NSArray arrayWithArray:textParsers];
+    
+    return self.markdownTextParsers;
 }
 
 @end
